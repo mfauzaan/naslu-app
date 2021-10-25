@@ -14,14 +14,29 @@ export default function PersonList() {
   const [loading, setLoading] = useState(true);
   const [persons, setPersons] = useState();
 
+
   const columns = [
     {
       title: "Name",
-      render: (_, value) => (
-        <p>
-          {value.firstName} {value.lastName}
-        </p>
+      render: (_, person) => (
+        <div className="flex items-center">
+          <div className="flex-shrink-0 h-10 w-10">
+            <span className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-500">
+              <span className="font-medium leading-none text-white">{person.firstName[0]}{person.lastName[0]}</span>
+            </span>
+          </div>
+          <div className="ml-4">
+            <div className="text-sm font-medium text-gray-900">{person.firstName} {person.lastName}</div>
+            <div className="text-sm text-gray-500">{person.idCardNumber}</div>
+          </div>
+        </div>
       ),
+    },
+    {
+      title: "gender",
+      key: "gender",
+      dataIndex: "gender",
+      render: (gender) => <p className="whitespace-nowrap text-sm text-gray-500">{capitalize(gender)}</p>,
     },
     {
       title: "Date of Birth",
@@ -29,20 +44,15 @@ export default function PersonList() {
       render: (dob) => <p>{moment(dob).format("DD-MMM-YYYY")}</p>,
     },
     {
-      title: "Id Card Number",
-      key: "idCardNumber",
-      dataIndex: "idCardNumber",
-    },
-    {
-      title: "gender",
-      key: "gender",
-      dataIndex: "gender",
-      render: (gender) => <p>{capitalize(gender)}</p>,
-    },
-    {
       title: "Address",
       key: "address",
       dataIndex: "address",
+      render: (_, person) => (
+        <td className="whitespace-nowrap">
+          <div className="text-sm text-gray-900">{person.address}</div>
+          <div className="text-sm text-gray-500">Island</div>
+        </td>
+      )
     },
     {
       title: "Action",
