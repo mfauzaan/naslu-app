@@ -1,45 +1,23 @@
-import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
-import cx from 'classnames';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { Fragment } from 'react';
-import { Avatar } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { Fragment } from "react";
+import { Avatar } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 
-interface NavItemProp {
-  title: string;
-  href: string;
-}
 const navigation = [
-  { name: 'Persons', href: '/admin/persons' },
-  { name: 'Address', href: '/admin/address' },
-  { name: 'Islands', href: '/admin/islands' },
-]
+  { name: "Persons", href: "/admin/persons" },
+  { name: "Address", href: "/admin/address" },
+  { name: "Islands", href: "/admin/islands" },
+];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 const Nav = ({ pageProps }: any) => {
   const router = useRouter();
-
-  const NavItem = ({ title, href }: NavItemProp) => {
-    return (
-      <div className="mx-3">
-        <Link href={href}>
-          <div
-            className={cx(
-              'py-2 md:px-6 px-2 mb-1 font-semibold cursor-pointer rounded-md text-xs text-gray-800 hover:bg-gray-100',
-              { 'bg-gray-100': '/' + router.asPath.split('/')[1] === href },
-            )}
-          >
-            {title}
-          </div>
-        </Link>
-      </div>
-    );
-  };
 
   return (
     <>
@@ -70,10 +48,16 @@ const Nav = ({ pageProps }: any) => {
                           <a
                             key={item.name}
                             className={classNames(
-                              router.asPath.includes(item.href) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                              'px-3 py-2 rounded-md text-sm font-medium'
+                              router.asPath.includes(item.href)
+                                ? "bg-gray-900 text-white"
+                                : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                              "px-3 py-2 rounded-md text-sm font-medium"
                             )}
-                            aria-current={router.asPath.includes(item.href) ? 'page' : undefined}
+                            aria-current={
+                              router.asPath.includes(item.href)
+                                ? "page"
+                                : undefined
+                            }
                           >
                             {item.name}
                           </a>
@@ -113,7 +97,10 @@ const Nav = ({ pageProps }: any) => {
                           {({ active }) => (
                             <a
                               href="#"
-                              className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                              className={classNames(
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm text-gray-700"
+                              )}
                             >
                               Your Profile
                             </a>
@@ -123,7 +110,10 @@ const Nav = ({ pageProps }: any) => {
                           {({ active }) => (
                             <a
                               href="#"
-                              className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                              className={classNames(
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm text-gray-700"
+                              )}
                             >
                               Settings
                             </a>
@@ -133,7 +123,10 @@ const Nav = ({ pageProps }: any) => {
                           {({ active }) => (
                             <a
                               href="#"
-                              className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                              className={classNames(
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm text-gray-700"
+                              )}
                             >
                               Sign out
                             </a>
@@ -147,22 +140,29 @@ const Nav = ({ pageProps }: any) => {
             </div>
 
             <Disclosure.Panel className="sm:hidden">
-              <div className="px-2 pt-2 pb-3 space-y-1">
-                {navigation.map((item) => (
-                  <Link href={item.href}>
-                    <a
-                      key={item.name}
-                      className={classNames(
-                        router.asPath.includes(item.href) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                        'block px-3 py-2 rounded-md text-base font-medium'
-                      )}
-                      aria-current={router.asPath.includes(item.href) ? 'page' : undefined}
-                    >
-                      {item.name}
-                    </a>
-                  </Link>
-                ))}
-              </div>
+              {({ close }) => (
+                <div className="px-2 pt-2 pb-3 space-y-1">
+                  {navigation.map((item) => (
+                    <Link href={item.href}>
+                      <a
+                        onClick={() => close()}
+                        key={item.name}
+                        className={classNames(
+                          router.asPath.includes(item.href)
+                            ? "bg-gray-900 text-white"
+                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                          "block px-3 py-2 rounded-md text-base font-medium"
+                        )}
+                        aria-current={
+                          router.asPath.includes(item.href) ? "page" : undefined
+                        }
+                      >
+                        {item.name}
+                      </a>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </Disclosure.Panel>
           </>
         )}
