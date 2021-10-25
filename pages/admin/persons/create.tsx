@@ -78,7 +78,7 @@ export default function CreatePerson({ record }) {
       console.log(error);
     }
     setLoading(false);
-    router.push({
+    router.replace({
       pathname: "/admin/persons",
     });
   };
