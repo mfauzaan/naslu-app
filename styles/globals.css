@@ -34,3 +34,7 @@ p {
   @apply border-2;
   @apply shadow-none;
 }
+
+.ant-select-selection-search-input {
+  @apply !important ring-transparent;
+}

@@ -30,6 +30,11 @@ export default function AddressList() {
     {
       title: "Street Address",
       dataIndex: 'streetAddress',
+      render: (value) => (
+        <p>
+          {value || '-'}
+        </p>
+      ),
     },
     {
       title: "Island",
@@ -58,13 +63,15 @@ export default function AddressList() {
   };
 
   useEffect(() => {
-    setLoading(true);
-    const params = new URLSearchParams(pickBy(router.query));
-    api.get(`/address?page=${page}&${params}`).then((resp: any) => {
-      setLoading(false);
-      setPersons(resp.data);
-    });
-  }, [page, search]);
+    if (!open) {
+      setLoading(true);
+      const params = new URLSearchParams(pickBy(router.query));
+      api.get(`/address?page=${page}&${params}`).then((resp: any) => {
+        setLoading(false);
+        setPersons(resp.data);
+      });
+    }
+  }, [page, search, open]);
 
   return (
     <Fragment>
