@@ -8,7 +8,7 @@ import Layout from "../../../components/layout";
 import NestedLayout from "../../../components/nested-layout";
 import Table from "../../../components/table";
 import { useApi } from "../../../contexts/api";
-import router from "next/router";
+import { useRouter } from "next/router";
 import { omit } from 'lodash';
 
 export default function PersonList() {
