@@ -2,35 +2,55 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import { Button, Form, Select } from "antd";
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { debounce } from 'lodash'
-import { Spinner } from "../../../components/spinner";
+import { debounce } from "lodash";
 import { useApi } from "../../../contexts/api";
 
-export default function CreateAddress({ open, setOpen }) {
+export default function CreateAddress({ open, setOpen, record, setRecord }) {
   const [form] = Form.useForm();
   const cancelButtonRef = useRef(null);
-  const [islands, setIslands] = useState<any>();
+  const [islands, setIslands] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const { api } = useApi();
 
   useEffect(() => {
-    form.resetFields();
+    if (record) {
+      form.resetFields();
+      form.setFieldsValue({
+        ...record,
+        island: record.island._id
+      })
+    } else {
+      form.resetFields();
+    }
+
     api.get(`/islands`).then((resp: any) => {
       setIslands(resp.data.data);
+
+      if (record) {
+        setIslands([
+          ...resp.data.data,
+          record.island
+        ]);
+      }
     });
   }, [open]);
 
-  const okHandler = async (id?) => {
-    setLoading(true)
+  const okHandler = async () => {
+    setLoading(true);
     const values = await form.validateFields();
 
     try {
-      await api.post('/address', values)
-      setOpen(false)
+      if (record){ 
+        await api.patch(`/address/${record._id}`, values);
+      } else {
+        await api.post("/address", values);
+      }
+
+      setOpen(false);
     } catch (error) {
       console.log(error);
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   const handleSearch = async (value) => {
@@ -40,10 +60,6 @@ export default function CreateAddress({ open, setOpen }) {
       });
     }
   };
-
-  if (!islands) {
-    return <Spinner />;
-  }
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -78,7 +94,7 @@ export default function CreateAddress({ open, setOpen }) {
                     <div className="py-6 px-4 bg-indigo-700 sm:px-6">
                       <div className="flex items-center justify-between">
                         <Dialog.Title className="text-lg font-medium text-white">
-                          New Address
+                          {record ? 'Update' : 'New'} Address
                         </Dialog.Title>
                         <div className="ml-3 h-7 flex items-center">
                           <button

@@ -1,6 +1,6 @@
 import { SearchIcon } from "@heroicons/react/outline";
 import { Input, Space } from "antd";
-import { pickBy } from 'lodash';
+import { pickBy } from "lodash";
 import { useRouter } from "next/router";
 import React, { Fragment, ReactElement, useEffect, useState } from "react";
 import Layout from "../../../components/layout";
@@ -13,28 +13,21 @@ export default function AddressList() {
   const { api } = useApi();
   const [loading, setLoading] = useState(true);
   const [persons, setPersons] = useState();
-  const [open, setOpen] = useState(false)
-  const router = useRouter()
-  const { page = 1, search } = router.query
+  const [record, setRecord] = useState();
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const { page = 1, search } = router.query;
 
   const columns = [
     {
       title: "Address",
-      width: '40%',
-      render: (_, value) => (
-        <p>
-          {value.address}
-        </p>
-      ),
+      width: "40%",
+      render: (_, value) => <p>{value.address}</p>,
     },
     {
       title: "Street Address",
-      dataIndex: 'streetAddress',
-      render: (value) => (
-        <p>
-          {value || '-'}
-        </p>
-      ),
+      dataIndex: "streetAddress",
+      render: (value) => <p>{value || "-"}</p>,
     },
     {
       title: "Island",
@@ -49,15 +42,22 @@ export default function AddressList() {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <a>Edit</a>
+          <button onClick={
+            () => {
+              setRecord(record)
+              setOpen(true)
+            }
+          } 
+            className="text-indigo-500"
+          >Edit</button>
         </Space>
       ),
     },
   ];
 
-  const handleSearch = e => {
+  const handleSearch = (e) => {
     router.push({
-      pathname: '/admin/address',
+      pathname: "/admin/address",
       query: { search: e.target.value },
     });
   };
@@ -65,6 +65,7 @@ export default function AddressList() {
   useEffect(() => {
     if (!open) {
       setLoading(true);
+      setRecord(null)
       const params = new URLSearchParams(pickBy(router.query));
       api.get(`/address?page=${page}&${params}`).then((resp: any) => {
         setLoading(false);
@@ -98,22 +99,24 @@ export default function AddressList() {
                 placeholder="Search"
                 defaultValue={search}
                 onPressEnter={handleSearch}
-                onChange={e => !e.target.value && router.push('/admin/address')}
+                onChange={(e) =>
+                  !e.target.value && router.push("/admin/address")
+                }
               />
             </div>
-              <button
-                onClick={() => setOpen(true)}
-                type="button"
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Create
-              </button>
+            <button
+              onClick={() => setOpen(true)}
+              type="button"
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Create
+            </button>
           </div>
         </div>
       </div>
 
       <Table columns={columns} loading={loading} records={persons} />
-      <CreateIsland open={open} setOpen={setOpen}/>
+      <CreateIsland open={open} setOpen={setOpen} record={record} setRecord={setRecord}/>
     </Fragment>
   );
 }
