@@ -12,6 +12,7 @@ import router from "next/router";
 import { omit } from 'lodash';
 
 export default function PersonList() {
+  const router = useRouter();
   const { api } = useApi();
   const [loading, setLoading] = useState(true);
   const [persons, setPersons] = useState();

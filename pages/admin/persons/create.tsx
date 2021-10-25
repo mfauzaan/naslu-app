@@ -78,9 +78,7 @@ export default function CreatePerson({ record }) {
       console.log(error);
     }
     setLoading(false);
-    router.replace({
-      pathname: "/admin/persons",
-    });
+    router.push('/admin/persons')
   };
 
   const handleSearch = async (value) => {
