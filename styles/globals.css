@@ -38,3 +38,7 @@ p {
 .ant-select-selection-search-input {
   @apply !important ring-transparent;
 }
+
+.bar-of-progress {
+  z-index: 50;
+}

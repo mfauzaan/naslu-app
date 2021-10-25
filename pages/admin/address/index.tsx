@@ -1,6 +1,6 @@
 import { SearchIcon } from "@heroicons/react/outline";
 import { Input, Space } from "antd";
-import { pickBy } from "lodash";
+import { omit } from "lodash";
 import { useRouter } from "next/router";
 import React, { Fragment, ReactElement, useEffect, useState } from "react";
 import Layout from "../../../components/layout";
@@ -66,7 +66,7 @@ export default function AddressList() {
     if (!open) {
       setLoading(true);
       setRecord(null)
-      const params = new URLSearchParams(pickBy(router.query));
+      const params = new URLSearchParams(omit(router.query, ['page']));
       api.get(`/address?page=${page}&${params}`).then((resp: any) => {
         setLoading(false);
         setPersons(resp.data);

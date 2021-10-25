@@ -1,12 +1,11 @@
 import React, { Fragment, ReactElement, useEffect, useState } from "react";
 import { SearchIcon } from "@heroicons/react/outline";
-import { Space, Spin } from "antd";
+import { Space } from "antd";
 import { capitalize } from "lodash";
 import moment from "moment";
 import Link from "next/link";
 import Layout from "../../../components/layout";
 import NestedLayout from "../../../components/nested-layout";
-import Spinner from "../../../components/spinner";
 import Table from "../../../components/table";
 import { useApi } from "../../../contexts/api";
 
