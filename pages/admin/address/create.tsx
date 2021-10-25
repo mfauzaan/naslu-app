@@ -1,11 +1,11 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import { Button, Form, Select } from "antd";
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { Dispatch, Fragment, SetStateAction, useEffect, useRef, useState } from "react";
 import { debounce } from "lodash";
 import { useApi } from "../../../contexts/api";
 
-export default function CreateAddress({ open, setOpen, record, setRecord }) {
+export default function CreateAddress({ open = true, setOpen, record, setRecord }: { open: boolean, setOpen: Dispatch<SetStateAction<boolean>>, record: any, setRecord: Dispatch<SetStateAction<any>> }) {
   const [form] = Form.useForm();
   const cancelButtonRef = useRef(null);
   const [islands, setIslands] = useState<any>([]);
@@ -67,7 +67,7 @@ export default function CreateAddress({ open, setOpen, record, setRecord }) {
         as="div"
         className="fixed inset-0 overflow-hidden"
         initialFocus={cancelButtonRef}
-        onClose={setOpen}
+        onClose={() => setOpen(false)}
         static={true}
       >
         <div className="absolute inset-0 overflow-hidden">
