@@ -17,7 +17,7 @@ export default function Home() {
   const dspRef = useRef();
 
   useEffect(() => {
-    const dspContainer = dspRef.current;
+    const dspContainer: any = dspRef.current;
     
     const tween = {
       css: {
