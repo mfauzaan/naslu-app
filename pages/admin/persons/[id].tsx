@@ -23,26 +23,6 @@ const eventTypes = {
   male: { icon: UserIcon, bgColorClass: 'bg-gray-400' },
   female: { icon: UserIcon, bgColorClass: 'bg-green-500' },
 }
-const timeline = [
-  {
-    id: 1,
-    gender: eventTypes.male,
-    content: 'Mary Mohamed',
-    date: 'Sep 20',
-  },
-  {
-    id: 2,
-    gender: eventTypes.female,
-    content: 'Mary Mohamed',
-    date: 'Sep 20',
-  },
-  {
-    id: 3,
-    gender: eventTypes.male,
-    content: 'Mary Mohamed',
-    date: 'Sep 20',
-  },
-]
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -53,6 +33,7 @@ export default function PersonShow() {
   const { api } = useApi();
   const [loading, setLoading] = useState(true);
   const [person, setPerson] = useState<any>();
+  const [relatives, setRelatives] = useState<any>([]);
   const { id } = router.query
     
   useEffect(() => {
@@ -61,6 +42,10 @@ export default function PersonShow() {
       api.get(`/persons/${id}`).then((resp: any) => {
         setLoading(false);
         setPerson(resp.data);
+      });
+
+      api.get(`/persons/${id}/relatives`).then((resp: any) => {
+        setRelatives(resp.data);
       });
     }
   }, [id]);
@@ -160,29 +145,26 @@ export default function PersonShow() {
             {/* Activity Feed */}
             <div className="mt-6 flow-root">
               <ul role="list" className="-mb-8">
-                {timeline.map((item, itemIdx) => (
+                {relatives.map((item, itemIdx) => (
                   <li key={item.id}>
                     <div className="relative pb-8">
-                      {itemIdx !== timeline.length - 1 ? (
+                      {itemIdx !== relatives.length - 1 ? (
                         <span className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true" />
                       ) : null}
                       <div className="relative flex space-x-3">
                         <div>
                           <span
-                            className={classNames(
-                              item.gender.bgColorClass,
-                              'h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white'
-                            )}
+                            className={'h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white bg-gray-400'}
                           >
-                            <item.gender.icon className="w-5 h-5 text-white" aria-hidden="true" />
+                            <UserIcon className="w-5 h-5 text-white" aria-hidden="true"/>
                           </span>
                         </div>
                         <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                           <div>
                             <p className="text-sm text-gray-500">
-                              {item.content}{' '}
+                              {item.firstName} {item.lastName}
                               <a href="#" className="font-medium text-gray-900">
-                                {/* {item.gender} */}
+                                {item.isParent}
                               </a>
                             </p>
                           </div>
