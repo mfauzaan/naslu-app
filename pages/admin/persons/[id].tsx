@@ -161,15 +161,14 @@ export default function PersonShow() {
                         </div>
                         <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                           <div>
-                            <p className="text-sm text-gray-500">
-                              {item.firstName} {item.lastName}
-                              <a href="#" className="font-medium text-gray-900">
-                                {item.isParent}
-                              </a>
-                            </p>
+                            <Link href={`/admin/persons/${item._id}`}>
+                              <p className="text-sm font-medium text-gray-500 hover:text-gray-900 cursor-pointer">
+                                  {item.firstName} {item.lastName}
+                              </p>
+                            </Link>
                           </div>
-                          <div className="text-right text-sm whitespace-nowrap text-gray-500">
-                            {/* <time dateTime={item.datetime}>{item.date}</time> */}
+                          <div className="text-right text-sm whitespace-nowrap text-gray-900">
+                            {item.__v == 1 ? (item.gender == 'male' ? 'Father' : 'Mother') : ''}
                           </div>
                         </div>
                       </div>
