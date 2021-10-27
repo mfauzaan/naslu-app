@@ -28,6 +28,10 @@ p {
   @apply !important rounded-md;
 }
 
+.ant-picker {
+  @apply !important rounded-md;
+}
+
 .ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused {
   @apply ring-indigo-500;
   @apply border-indigo-500;
@@ -41,4 +45,8 @@ p {
 
 .bar-of-progress {
   z-index: 50;
+}
+
+.ant-form-item {
+  @apply !important mb-0;
 }

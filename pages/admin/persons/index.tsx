@@ -62,7 +62,7 @@ export default function PersonList() {
       render: (address) => (
         <td className="whitespace-nowrap">
           <div className="text-sm text-gray-900">{address.address}</div>
-          <div className="text-sm text-gray-500">{address.island}</div>
+          <div className="text-sm text-gray-500">{address.island.atoll}. {address.island.name}</div>
         </td>
       )
     },

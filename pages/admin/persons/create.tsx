@@ -9,39 +9,14 @@ import NestedLayout from "../../../components/nested-layout";
 import { useApi } from "../../../contexts/api";
 import { debounce } from "lodash";
 
-const people = [
-  {
-    name: "Leonard Krasner",
-    handle: "leonardkrasner",
-    imageUrl:
-      "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Floyd Miles",
-    handle: "floydmiles",
-    imageUrl:
-      "https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Emily Selman",
-    handle: "emilyselman",
-    imageUrl:
-      "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  {
-    name: "Kristin Watson",
-    handle: "kristinwatson",
-    imageUrl:
-      "https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-];
-
 export default function CreatePerson({ record }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const { api } = useApi();
   const [address, setAddress] = useState<any>([]);
+  const [father, setFather] = useState<any>([]);
+  const [mother, setMother] = useState<any>([]);
 
   useEffect(() => {
     if (record) {
@@ -54,37 +29,72 @@ export default function CreatePerson({ record }) {
       form.resetFields();
     }
 
-    api.get(`/address`).then((resp: any) => {
+    api.get('/address').then((resp: any) => {
       setAddress(resp.data.data);
 
       if (record) {
         setAddress([...resp.data.data]);
       }
     });
+
+    api.get('/persons?gender=male').then((resp: any) => {
+      setFather(resp.data.data);
+
+      if (record) {
+        setFather([...resp.data.data]);
+      }
+    });
+
+    api.get('/persons?gender=female').then((resp: any) => {
+      setMother(resp.data.data);
+
+      if (record) {
+        setMother([...resp.data.data]);
+      }
+    });
   }, []);
 
   const okHandler = async () => {
     setLoading(true);
-    const values = await form.validateFields()
-      .catch(() => setLoading(false));
-
     try {
-      if (record) {
-        await api.patch(`/persons/${record._id}`, values);
-      } else {
-        await api.post("/persons", values);
+      const values = await form.validateFields()
+
+      try {
+        if (record) {
+          await api.patch(`/persons/${record._id}`, values);
+        } else {
+          await api.post("/persons", values);
+        }
+      } catch (error) {
+        console.log(error);
       }
+      setLoading(false);
+      router.push('/admin/persons')
     } catch (error) {
       console.log(error);
     }
-    setLoading(false);
-    router.push('/admin/persons')
   };
 
   const handleSearch = async (value) => {
     if (value) {
       api.get(`/address?search=${value}`).then((resp: any) => {
         setAddress(resp.data.data);
+      });
+    }
+  };
+
+  const handleFatherSearch = async (value) => {
+    if (value) {
+      api.get(`/persons?search=${value}&gender=male`).then((resp: any) => {
+        setFather(resp.data.data);
+      });
+    }
+  };
+
+  const handleMotherSearch = async (value) => {
+    if (value) {
+      api.get(`/persons?search=${value}&gender=female`).then((resp: any) => {
+        setMother(resp.data.data);
       });
     }
   };
@@ -110,43 +120,32 @@ export default function CreatePerson({ record }) {
             </div>
 
             <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-              <div className="sm:col-span-1">
-                <Form.Item
-                    name="idCardNumber"
-                    label="ID Card Number"
-                    className="mb-0 pb-0"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter a ID card number",
-                      },
-                    ]}
-                  >
-                  <div className="mt-1 flex rounded-md shadow-sm">
-                    <span className="inline-flex items-center px-4 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
-                      A
-                    </span>
-                    <input
-                      placeholder="294400"
-                      type="text"
-                      className="flex-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 rounded-none rounded-r-md sm:text-sm border-gray-300"
-                    />
-                  </div>
+              <div className="sm:col-span-6">
+                <div className="w-full md:w-1/4">
+                  <Form.Item
+                      name="idCardNumber"
+                      label="ID Card Number"
+                      className="mb-0 pb-0"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please enter a ID card number",
+                        },
+                      ]}
+                    >
+                    <div className="flex rounded-md shadow-sm">
+                      <span className="inline-flex items-center px-4 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
+                        A
+                      </span>
+                      <input
+                        placeholder="294400"
+                        type="text"
+                        className="flex-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 rounded-none rounded-r-md sm:text-sm border-gray-300"
+                      />
+                    </div>
                   </Form.Item>
+                </div>
               </div>
-            </div>
-          </div>
-
-          <div className="pt-8">
-            <div>
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Personal Information
-              </h3>
-              <p className="mt-1 text-sm text-gray-500">
-                Use a permanent address where you can receive mail.
-              </p>
-            </div>
-            <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
               <div className="sm:col-span-3">
                 <Form.Item
                   name="firstName"
@@ -263,45 +262,51 @@ export default function CreatePerson({ record }) {
           <div className="pt-8">
             <div>
               <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Family
+                Relatives
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                Pick up the existing family members
+                This information is used to map the family tree.
               </p>
             </div>
-            <div className="mt-6 w-1/2">
-              <div className="flow-root mt-6">
-                <ul role="list" className="-my-5 divide-y divide-gray-200">
-                  {people.map((person) => (
-                    <li key={person.handle} className="py-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="flex-shrink-0">
-                          <img
-                            className="h-8 w-8 rounded-full"
-                            src={person.imageUrl}
-                            alt=""
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">
-                            {person.name}
-                          </p>
-                          <p className="text-sm text-gray-500 truncate">
-                            {"@" + person.handle}
-                          </p>
-                        </div>
-                        <div>
-                          <a
-                            href="#"
-                            className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
-                          >
-                            Select
-                          </a>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+
+            <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+              <div className="sm:col-span-2">
+                <Form.Item
+                  name="father"
+                  label="Father"
+                >
+                  <Select
+                    getPopupContainer={(trigger) => trigger.parentElement}
+                    placeholder="Select a person"
+                    allowClear
+                    showSearch
+                    onSearch={debounce(handleFatherSearch, 200)}
+                    filterOption={false}
+                    options={father.map((value) => ({
+                      label: `${value.firstName} ${value.lastName}`,
+                      value: value._id,
+                    }))}
+                  />
+                </Form.Item>
+              </div>
+              <div className="sm:col-span-2">
+                <Form.Item
+                  name="mother"
+                  label="Mother"
+                >
+                  <Select
+                    getPopupContainer={(trigger) => trigger.parentElement}
+                    placeholder="Select a person"
+                    allowClear
+                    showSearch
+                    onSearch={debounce(handleMotherSearch, 200)}
+                    filterOption={false}
+                    options={mother.map((value) => ({
+                      label: `${value.firstName} ${value.lastName}`,
+                      value: value._id,
+                    }))}
+                  />
+                </Form.Item>
               </div>
             </div>
           </div>
