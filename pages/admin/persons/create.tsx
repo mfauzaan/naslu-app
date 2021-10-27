@@ -17,6 +17,7 @@ export default function CreatePerson({ record }) {
   const [address, setAddress] = useState<any>([]);
   const [father, setFather] = useState<any>([]);
   const [mother, setMother] = useState<any>([]);
+  const { redirectUrl } = router.query
 
   useEffect(() => {
     if (record) {
@@ -69,7 +70,11 @@ export default function CreatePerson({ record }) {
         console.log(error);
       }
       setLoading(false);
-      router.push('/admin/persons')
+      if (redirectUrl) {
+        router.push('/admin/persons')
+      } else {
+        router.push(redirectUrl as string)
+      }
     } catch (error) {
       console.log(error);
     }
@@ -314,7 +319,7 @@ export default function CreatePerson({ record }) {
 
         <div className="pt-5">
           <div className="flex justify-end">
-            <Link href="/admin/persons">
+            <Link href={redirectUrl as string || '/admin/persons'}>
               <button
                 type="button"
                 className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

@@ -1,37 +1,21 @@
-import React, { Fragment, ReactElement, useEffect, useState } from 'react'
-import { Menu, Popover, Transition } from '@headlessui/react'
 import {
-  ArrowNarrowLeftIcon,
-  CheckIcon,
-  HomeIcon,
-  PaperClipIcon,
-  QuestionMarkCircleIcon,
-  SearchIcon,
-  ThumbUpIcon,
-  UserIcon,
+  UserIcon
 } from '@heroicons/react/solid'
-import NestedLayout from '../../../components/nested-layout'
-import Layout from '../../../components/layout'
-import { useApi } from '../../../contexts/api'
-import { useRouter } from 'next/router'
-import { Spinner } from '../../../components/spinner'
+import { capitalize } from 'lodash'
 import moment from 'moment'
-import { capitalize }  from 'lodash'
 import Link from 'next/link'
-
-const eventTypes = {
-  male: { icon: UserIcon, bgColorClass: 'bg-gray-400' },
-  female: { icon: UserIcon, bgColorClass: 'bg-green-500' },
-}
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
+import { useRouter } from 'next/router'
+import React, { ReactElement, useEffect, useState } from 'react'
+import Layout from '../../../components/layout'
+import NestedLayout from '../../../components/nested-layout'
+import { Spinner } from '../../../components/spinner'
+import { useApi } from '../../../contexts/api'
 
 export default function PersonShow() {
   const router = useRouter();
   const { api } = useApi();
   const [loading, setLoading] = useState(true);
+  const [relLoading, SetRelLoading] = useState(true);
   const [person, setPerson] = useState<any>();
   const [relatives, setRelatives] = useState<any>([]);
   const { id } = router.query
@@ -46,6 +30,7 @@ export default function PersonShow() {
 
       api.get(`/persons/${id}/relatives`).then((resp: any) => {
         setRelatives(resp.data);
+        SetRelLoading(false)
       });
     }
   }, [id]);
@@ -145,7 +130,7 @@ export default function PersonShow() {
             {/* Activity Feed */}
             <div className="mt-6 flow-root">
               <ul role="list" className="-mb-8">
-                {relatives.map((item, itemIdx) => (
+                {relLoading ? <Spinner className="mb-6"/> : relatives.map((item, itemIdx) => (
                   <li key={item.id}>
                     <div className="relative pb-8">
                       {itemIdx !== relatives.length - 1 ? (
@@ -178,7 +163,7 @@ export default function PersonShow() {
               </ul>
             </div>
             <div className="mt-6 flex flex-col justify-stretch">
-              <Link href={`/admin/persons/create?redirectUrl=admin/persons/${person._id}`}>
+              <Link href={`/admin/persons/create?redirectUrl=/admin/persons/${person._id}`}>
                 <button
                   type="button"
                   className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
